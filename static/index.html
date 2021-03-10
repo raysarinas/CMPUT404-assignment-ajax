@@ -53,8 +53,8 @@ function sendJSONXMLHTTPRequest(url, objects, callback) {
     xhr.open("POST", url);
     //XXX: set the mimetype and the accept headers!
     // Remember to use application/json !
-    xhr.overrideMimeType("Content-Type", "application/json");
-    xhr.setRequestHeader("Accept", "application/json");
+    xhr.overrideMimeType("application/json");
+    xhr.setRequestHeader('Accept', "application/json");
     xhr.send(JSON.stringify(objects));
 }
 
@@ -71,7 +71,8 @@ function drawCircle(context,entity) {
         //moveTo(x,y);
         fillStyle = entity["colour"];
         strokeStyle = fillStyle;
-        arc(x, y, (entity["radius"])?entity["radius"]:50, 0, 2.0 * Math.PI, false);  
+        arc(x, y, (entity["radius"]) ? entity["radius"] : 50, 0, 2.0 * Math.PI, false);
+        // if (entity["colour"] != 'blue') fill();
         stroke();                                
     }
 }
@@ -144,7 +145,9 @@ function addEntity(entity, data) {
     world[entity] = data;
     drawNextFrame(); // (but should we?)
     //XXX: Send a XHTML Request that updates the entity you just modified!
-
+    // can use relative url: https://stackoverflow.com/a/4888391?
+    // console.log(host);
+    sendJSONXMLHTTPRequest("/entity/" + entity, data, () => {});
 }
 
 var counter = 0;
@@ -268,6 +271,10 @@ mouse.mousedraggers.push(function(x,y,clicked,e) {
 
 function update() {
     //XXX: TODO Get the world from the webservice using a XMLHTTPRequest
+    sendJSONXMLHTTPRequest("/world", null, (data) => {
+        world = data;
+        drawNextFrame();
+    });
     drawFrame();
 }
 
