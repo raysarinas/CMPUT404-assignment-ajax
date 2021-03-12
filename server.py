@@ -22,7 +22,7 @@
 
 
 import flask
-from flask import Flask, request, redirect, url_for, jsonify
+from flask import Flask, request, redirect, jsonify
 import json
 app = Flask(__name__)
 app.debug = True
@@ -74,19 +74,13 @@ def flask_post_json():
 @app.route("/")
 def hello():
     '''Return something coherent here.. perhaps redirect to /static/index.html '''
-    return redirect(url_for('static', filename='index.html'))
+    return redirect("/static/index.html", code=302)
 
 @app.route("/entity/<entity>", methods=['POST','PUT'])
 def update(entity):
     '''update the entities via this interface'''
     data = flask_post_json()
-
-    if data:
-        for key, val in data.items():
-            myWorld.update(entity, key, val)
-    else:
-        myWorld.set(entity)
-
+    myWorld.set(entity, data)
     return jsonify(myWorld.get(entity))
 
 @app.route("/world", methods=['POST','GET'])    
