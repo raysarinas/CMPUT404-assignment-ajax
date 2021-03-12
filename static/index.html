@@ -6,7 +6,7 @@
     <meta content='width=device-width; height=device-height; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;' name='viewport' />
     <meta name="viewport" content="width=device-width" />
     <meta name="license" content="
-        Copyright 2013 Abram Hindle
+        Copyright 2021 Raymond Sarinas, Abram Hindle
         
         Licensed under the Apache License, Version 2.0 (the "License");
         you may not use this file except in compliance with the License.
@@ -50,12 +50,12 @@ function sendJSONXMLHTTPRequest(url, objects, callback) {
         }
     };
     //XXX: POST to a URL
-    xhr.open("POST", url);
+    xhr.open("POST", url, true);
     //XXX: set the mimetype and the accept headers!
     // Remember to use application/json !
     xhr.overrideMimeType("application/json");
     xhr.setRequestHeader('Accept', "application/json");
-    // xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.setRequestHeader("Content-Type", "application/json");
     xhr.send(JSON.stringify(objects));
 }
 
@@ -83,7 +83,7 @@ function prepEntity(entity) {
         entity["colour"] = "#FF0000";
     }
     if (!entity["radius"]) {
-        entity["radius"] = 50;
+        entity["radius"] = 30;
     }
     return entity;
 }
@@ -146,7 +146,8 @@ function addEntity(entity, data) {
     world[entity] = data;
     // drawNextFrame(); // (but should we?)
     //XXX: Send a XHTML Request that updates the entity you just modified!
-    // can use relative url: https://stackoverflow.com/a/4888391
+    // https://stackoverflow.com/a/4888391
+    // can use relative urls, according to TJ (https://stackoverflow.com/users/157247/t-j-crowder) 
     sendJSONXMLHTTPRequest("/entity/" + entity, data, () => {});
 }
 
@@ -253,18 +254,23 @@ mouse = (function() {
     return self;
 })();
 
+// https://stackoverflow.com/questions/1484506/random-color-generator#comment60053328_10838634
+// generating a random color, from James (https://stackoverflow.com/users/1185191/james)
+function randomColour() {
+    return '#' + (Math.random().toString(16) + "000000").substring(2,8);
+}
 // Add the application specific mouse listeners!
 //XXX: TODO Make these prettier!
 mouse.mousedowners.push(function(x,y,clicked,e) {
-    addEntityWithoutName({'x':x,'y':y,'colour':'#' + (Math.random().toString(16) + "000000").substring(2,8)});
+    addEntityWithoutName({'x':x,'y':y,'colour':randomColour()});
 });
 
 mouse.mouseuppers.push(function(x,y,clicked,e) {
-    addEntityWithoutName({'x':x,'y':y,'colour':'#' + (Math.random().toString(16) + "000000").substring(2,8)});
+    addEntityWithoutName({'x':x,'y':y,'colour':randomColour()});
 });
 
 mouse.mousedraggers.push(function(x,y,clicked,e) {
-    addEntityWithoutName({'x':x,'y':y,'colour':'#' + (Math.random().toString(16) + "000000").substring(2,8),
+    addEntityWithoutName({'x':x,'y':y,'colour':randomColour(),
                           'radius':10});
 });
 

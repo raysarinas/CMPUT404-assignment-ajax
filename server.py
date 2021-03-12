@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
-# Copyright 2013 Abram Hindle
+# Copyright 2021 Raymond Sarinas, Abram Hindle
 # 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -81,7 +81,7 @@ def update(entity):
     '''update the entities via this interface'''
     data = flask_post_json()
 
-    if data: # test this idk if its right
+    if data:
         for key, val in data.items():
             myWorld.update(entity, key, val)
     else:
